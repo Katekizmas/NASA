@@ -1,3 +1,3 @@
-1 ) SELECT Semestras_Transporto_priemone.Numeris, Semestras_Transporto_priemone.Busena FROM Semestras_Transporto_priemone
-WHERE Semestras_Transporto_priemone.Numeris="AFU076" AND
-Semestras_Transporto_priemone.Busena="Vaziuoja"
+1 ) patikrintiArYraNumeris = "SELECT Semestras_Transporto_priemone.Numeris FROM Semestras_Transporto_priemone 
+WHERE Semestras_Transporto_priemone.Numeris='%s' AND Semestras_Transporto_priemone.Busena='Vaziuoja'" % (numeris)
+
