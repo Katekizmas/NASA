@@ -1,3 +1,8 @@
 1 ) patikrintiArYraNumeris = "SELECT Semestras_Transporto_priemone.Numeris FROM Semestras_Transporto_priemone 
 WHERE Semestras_Transporto_priemone.Numeris='%s' AND Semestras_Transporto_priemone.Busena='Vaziuoja'" % (numeris)
-
+2 ) UPDATE Semestras_Transporto_priemone SET Semestras_Transporto_priemone.Busena='Nebestovi'
+WHERE Semestras_Transporto_priemone.id_Transporto_priemone='5';
+UPDATE Semestras_Stovejimo_laikas SET Semestras_Stovejimo_laikas.stovejimo_pabaiga= '2019-05-12 10:06:09',
+Semestras_Stovejimo_laikas.Busena='Paruosta'
+WHERE Semestras_Stovejimo_laikas.fk_Transporto_priemone='5' AND
+Semestras_Stovejimo_laikas.Busena='Nesumoketa';
