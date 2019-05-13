@@ -8,6 +8,10 @@
     Semestras_Stovejimo_laikas.Busena='%s' WHERE Semestras_Stovejimo_laikas.fk_Transporto_priemone='%s' 
     AND Semestras_Stovejimo_laikas.Busena='%s';" % (gautiLaika(), raktasParuosta, ID, raktasNesumoketa)
     
-3 ) "INSERT INTO Semestras_Stovejimo_laikas(Semestras_Stovejimo_laikas.stovejimo_pradzia, Semestras_Stovejimo_laikas.stovejimo_pabaiga,
-    Semestras_Stovejimo_laikas.Busena, Semestras_Stovejimo_laikas.fk_Transporto_priemone) VALUES ('%s', '%s', '%s', '%s')"
-    % (gautiLaika(), gautiLaika(), raktasIsvaziuoja, ID)
+3 ) atnaujintiIvaziuojanti = "UPDATE Semestras_Transporto_priemone SET Semestras_Transporto_priemone.Busena='%s' WHERE
+    Semestras_Transporto_priemone.id_Transporto_priemone='%s';" % (raktasIsvaziuoja, ID)
+    atnaujintiIvaziuojanti2 = "INSERT INTO Semestras_Stovejimo_laikas(Semestras_Stovejimo_laikas.stovejimo_pradzia,
+    Semestras_Stovejimo_laikas.stovejimo_pabaiga, Semestras_Stovejimo_laikas.Busena,
+    Semestras_Stovejimo_laikas.fk_Transporto_priemone) VALUES ('%s', '%s', '%s', '%s');"
+    % (gautiLaika(), gautiLaika(), raktasNesumoketa, ID)
+    
