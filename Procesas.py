@@ -9,7 +9,7 @@ judesioBukle = False
 nuotraukosKelias = "/home/pi/Documents/Nuotraukos/"
 
 def fotografuoti(esantisLaikas, nuotraukosKelias):
-    #nuotraukosPavadinimas = esantisLaikas.strftime("%Y.%m.%d-%H%M%S") + '.jpg'
+    #nuotraukosPavadinimas = esantisLaikas + '.jpg'
     nuotraukosPavadinimas = "masina2" + '.jpg'
     with picamera.PiCamera() as kamera:
         kamera.resolution = (1280, 720)
@@ -18,7 +18,7 @@ def fotografuoti(esantisLaikas, nuotraukosKelias):
         return nuotraukosPavadinimas
 def gautiLaika():
     esantisLaikas = datetime.now()
-    return esantisLaikas
+    return esantisLaikas.strftime("%Y-%m-%d %H:%M:%S")
 
 def gautiNumerius(nuotraukosKelias, nuotraukosPavadinimas):
     gautiNumeris = subprocess.Popen("alpr -c eu " + nuotraukosKelias + nuotraukosPavadinimas + " | tail | head -1 | awk '{print $2}'", shell=True, stdout=subprocess.PIPE).stdout
@@ -37,6 +37,7 @@ while True:
     print(judesioBukle)
     if judesioBukle:
         esantisLaikas = gautiLaika()
+        print(esantisLaikas)
         #nuotraukosPavadinimas = fotografuoti(esantisLaikas, nuotraukosKelias)
         nuotraukosPavadinimas = "masina2" + '.jpg'
         numeris = gautiNumerius(nuotraukosKelias, nuotraukosPavadinimas);

@@ -12,41 +12,47 @@ raktasIvaziuoja = "Nebestovi"
 raktasNesumoketa = "Nesumoketa"
 raktasParuosta = "Paruosta"
 
-#numeris = "ABC123"
-numeris = "69"
-
+numeris = "BAD696"
+idAikstele = "2" #Cia bus visada fiksuota reiksme, pagal prietaisa kur jis stovi yra nustatoma
 #Prideti dar aiksteles id ir pagal ji uzklausa pakeist
 def gautiLaika():
-    #esantisLaikas = datetime.now()
     return (datetime.datetime.fromtimestamp(time.time()).strftime("%Y-%m-%d %H:%M:%S"))
 def masinaIsvaziuoja(ID):
-    atnaujintiIsvaziuojanti = "UPDATE Semestras_Transporto_priemone SET Semestras_Transporto_priemone.Busena='%s' WHERE Semestras_Transporto_priemone.id_Transporto_priemone='%s';" % (raktasIvaziuoja, ID)
+    atnaujintiIsvaziuojanti1 = "UPDATE Semestras_Transporto_priemone SET Semestras_Transporto_priemone.Busena='%s' WHERE Semestras_Transporto_priemone.id_Transporto_priemone='%s';" % (raktasIvaziuoja, ID)
     atnaujintiIsvaziuojanti2 = "UPDATE Semestras_Stovejimo_laikas SET Semestras_Stovejimo_laikas.stovejimo_pabaiga='%s', Semestras_Stovejimo_laikas.Busena='%s' WHERE Semestras_Stovejimo_laikas.fk_Transporto_priemone='%s' AND Semestras_Stovejimo_laikas.Busena='%s';" % (gautiLaika(), raktasParuosta, ID, raktasNesumoketa)
     try:
-        zymeklis.execute(atnaujintiIsvaziuojanti)
+        zymeklis.execute(atnaujintiIsvaziuojanti1)
         zymeklis.execute(atnaujintiIsvaziuojanti2)
         duomenuBaze.commit()
-        print ("Duomenys sekmingai atnaujinti")
+        print ("Duomenys sekmingai atnaujinti (Isvaziuoja)")
     except:
         print ("Ivyko klaida atnaujinant duomenis (Isvaziuojant)")
         duomenuBaze.rollback()
     #duomenuBaze.close()
 def masinaIvaziuoja(ID):
-    atnaujintiIvaziuojanti = "UPDATE Semestras_Transporto_priemone SET Semestras_Transporto_priemone.Busena='%s' WHERE Semestras_Transporto_priemone.id_Transporto_priemone='%s';" % (raktasIsvaziuoja, ID)
+    atnaujintiIvaziuojanti1 = "UPDATE Semestras_Transporto_priemone SET Semestras_Transporto_priemone.Busena='%s' WHERE Semestras_Transporto_priemone.id_Transporto_priemone='%s';" % (raktasIsvaziuoja, ID)
     atnaujintiIvaziuojanti2 = "INSERT INTO Semestras_Stovejimo_laikas(Semestras_Stovejimo_laikas.stovejimo_pradzia, Semestras_Stovejimo_laikas.stovejimo_pabaiga, Semestras_Stovejimo_laikas.Busena, Semestras_Stovejimo_laikas.fk_Transporto_priemone) VALUES ('%s', '%s', '%s', '%s');" % (gautiLaika(), gautiLaika(), raktasNesumoketa, ID)
     try:
-        zymeklis.execute(atnaujintiIvaziuojanti)
+        zymeklis.execute(atnaujintiIvaziuojanti1)
         zymeklis.execute(atnaujintiIvaziuojanti2)
         duomenuBaze.commit()
-        print ("Duomenys sekmingai atnaujinti")
+        print ("Duomenys sekmingai atnaujinti (Ivaziuoja)")
     except:
         print ("Ivyko klaida atnaujinant duomenis (Ivaziuojant)")
         duomenuBaze.rollback()
     #duomenuBaze.close()
-def naujaMasina():
-    
-    
-    
+def masinaNauja():
+    idetiNauja1 = "INSERT INTO Semestras_Transporto_priemone(Semestras_Transporto_priemone.Numeris, Semestras_Transporto_priemone.Busena, Semestras_Transporto_priemone.fk_Aikstele) VALUES ('%s', '%s', '%s');" % (numeris, raktasIsvaziuoja, idAikstele)
+    idetiNauja2 = "INSERT INTO Semestras_Stovejimo_laikas(Semestras_Stovejimo_laikas.stovejimo_pradzia, Semestras_Stovejimo_laikas.stovejimo_pabaiga, Semestras_Stovejimo_laikas.Busena, Semestras_Stovejimo_laikas.fk_Transporto_priemone) VALUES('%s', '%s', '%s', LAST_INSERT_ID());" % (gautiLaika(), gautiLaika(), raktasNesumoketa)
+    try:
+        zymeklis.execute(idetiNauja1)
+        zymeklis.execute(idetiNauja2)
+        duomenuBaze.commit()
+        print ("Duomenys sekmingai prideti (Kuria nauja)")
+    except:
+        print ("Ivyko klaida pridedant duomenis (Kuria nauja)")
+        duomenuBaze.rollback()
+    #duomenuBaze.close()
 def tikrintiNumeri():
     patikrintiArYraNumeris = "SELECT Semestras_Transporto_priemone.Numeris, Semestras_Transporto_priemone.id_Transporto_priemone, Semestras_Transporto_priemone.Busena FROM Semestras_Transporto_priemone WHERE Semestras_Transporto_priemone.Numeris='%s'" % (numeris)
     try:
@@ -57,11 +63,10 @@ def tikrintiNumeri():
             print ("Jusu numeris : %s. Aciu, kad naudojates musu paslaugomis. ISVAZIUOJA" % numeris)
         elif (rezultatai[2] == raktasIvaziuoja):
             masinaIvaziuoja(rezultatai[1])
-            print (rezultatai[1])
             print ("Jusu numeris : %s. Aciu, kad naudojates musu paslaugomis. IVAZIUOJA" % numeris)
             
     except:
-        print ("Ivyko klaida")
+        masinaNauja()
 def main():
     while 1:
         tikrintiNumeri()
@@ -74,12 +79,8 @@ if __name__ == '__main__':
         zymeklis = duomenuBaze.cursor()
     except:
         print ("Nepavyko prisijungti prie duomenu serverio")
-             
     try:
       main()
     except KeyboardInterrupt:
-      print ("bye bye...")
+      print ("Programa baige darba...")
       pass
-#zymeklis.execute("SELECT * FROM TAB_CPU ORDER BY ID DESC LIMIT 1")
-#sql =  "INSERT INTO TAB_CPU (TValue, T_Date, T_Time) VALUES (%s, %s, %s)" 
-#c.execute(sql,( str(temperatur) , str(datum), str(zeit)))
