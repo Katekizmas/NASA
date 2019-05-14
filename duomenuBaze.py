@@ -14,9 +14,18 @@ raktasParuosta = "Paruosta"
 
 numeris = "BAD696"
 idAikstele = "2" #Cia bus visada fiksuota reiksme, pagal prietaisa kur jis stovi yra nustatoma
-#Prideti dar aiksteles id ir pagal ji uzklausa pakeist
+
 def gautiLaika():
     return (datetime.datetime.fromtimestamp(time.time()).strftime("%Y-%m-%d %H:%M:%S"))
+def gautiVietuSkaiciu():
+    gautiSkaiciu = "SELECT Semestras_Aikstele.Vietu_skaicius, COUNT(IF(Semestras_Transporto_priemone.Busena='%s',1,NULL))AS Uzimtos_vietos FROM Semestras_Aikstele INNER JOIN Semestras_Transporto_priemone ON Semestras_Transporto_priemone.fk_Aikstele=Semestras_Aikstele.id_Aikstele WHERE Semestras_Transporto_priemone.fk_Aikstele='%s' GROUP BY Semestras_Aikstele.Vietu_skaicius;" % (raktasIsvaziuoja, idAikstele)
+    try:
+        zymeklis.execute(gautiSkaiciu)
+        rezultatai = zymeklis.fetchone()
+        return rezultatai[0]-rezultatai[1]
+    except:
+        print("Ivyko klaida, skaitant vietu skaiciu")
+        return 0;
 def masinaIsvaziuoja(ID):
     atnaujintiIsvaziuojanti1 = "UPDATE Semestras_Transporto_priemone SET Semestras_Transporto_priemone.Busena='%s' WHERE Semestras_Transporto_priemone.id_Transporto_priemone='%s';" % (raktasIvaziuoja, ID)
     atnaujintiIsvaziuojanti2 = "UPDATE Semestras_Stovejimo_laikas SET Semestras_Stovejimo_laikas.stovejimo_pabaiga='%s', Semestras_Stovejimo_laikas.Busena='%s' WHERE Semestras_Stovejimo_laikas.fk_Transporto_priemone='%s' AND Semestras_Stovejimo_laikas.Busena='%s';" % (gautiLaika(), raktasParuosta, ID, raktasNesumoketa)
@@ -55,15 +64,19 @@ def masinaNauja():
     #duomenuBaze.close()
 def tikrintiNumeri():
     patikrintiArYraNumeris = "SELECT Semestras_Transporto_priemone.Numeris, Semestras_Transporto_priemone.id_Transporto_priemone, Semestras_Transporto_priemone.Busena FROM Semestras_Transporto_priemone WHERE Semestras_Transporto_priemone.Numeris='%s'" % (numeris)
+    vietuSkaicius = gautiVietuSkaiciu()
     try:
         zymeklis.execute(patikrintiArYraNumeris)
         rezultatai = zymeklis.fetchone()
         if (rezultatai[2] == raktasIsvaziuoja):
             masinaIsvaziuoja(rezultatai[1])
-            print ("Jusu numeris : %s. Aciu, kad naudojates musu paslaugomis. ISVAZIUOJA" % numeris)
+            print ("Jusu numeris : %s. Aciu, kad naudojates musu paslaugomis.\nLikusiu vietu skaicius: %s" % (numeris, vietuSkaicius))
         elif (rezultatai[2] == raktasIvaziuoja):
-            masinaIvaziuoja(rezultatai[1])
-            print ("Jusu numeris : %s. Aciu, kad naudojates musu paslaugomis. IVAZIUOJA" % numeris)
+            if (vietuSkaicius > 0):
+                masinaIvaziuoja(rezultatai[1])
+                print ("Jusu numeris : %s. Aciu, kad naudojates musu paslaugomis.\nLikusiu vietu skaicius: %s" % (numeris, vietuSkaicius))
+            else:
+                print("Aiksteleje, nera pakankamai vietos, prasome atvaziuoti veliau")
             
     except:
         masinaNauja()
