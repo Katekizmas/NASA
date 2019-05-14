@@ -23,9 +23,11 @@
     Semestras_Stovejimo_laikas.fk_Transporto_priemone) 
     VALUES('%s', '%s', '%s', LAST_INSERT_ID());" % (gautiLaika(), gautiLaika(), raktasNesumoketa)
     
-4 ) SELECT Semestras_Aikstele.Vietu_skaicius, COUNT(IF(Semestras_Transporto_priemone.Busena='Stovi',1,NULL))AS Uzimtos_vietos
-FROM Semestras_Aikstele
-INNER JOIN Semestras_Transporto_priemone ON Semestras_Transporto_priemone.fk_Aikstele=Semestras_Aikstele.id_Aikstele
-WHERE Semestras_Transporto_priemone.fk_Aikstele='2'
-GROUP BY Semestras_Aikstele.Vietu_skaicius;
+4 ) gautiSkaiciu = "SELECT Semestras_Aikstele.Vietu_skaicius,
+    COUNT(IF(Semestras_Transporto_priemone.Busena='%s',1,NULL))AS Uzimtos_vietos
+    FROM Semestras_Aikstele INNER JOIN Semestras_Transporto_priemone
+    ON Semestras_Transporto_priemone.fk_Aikstele=Semestras_Aikstele.id_Aikstele 
+    WHERE Semestras_Transporto_priemone.fk_Aikstele='%s' 
+    GROUP BY Semestras_Aikstele.Vietu_skaicius;" % (raktasIsvaziuoja, idAikstele)
+
     
