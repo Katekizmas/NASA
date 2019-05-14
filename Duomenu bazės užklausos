@@ -15,3 +15,6 @@
     Semestras_Stovejimo_laikas.fk_Transporto_priemone) VALUES ('%s', '%s', '%s', '%s');"
     % (gautiLaika(), gautiLaika(), raktasNesumoketa, ID)
     
+4 ) INSERT INTO Semestras_Transporto_priemone(Semestras_Transporto_priemone.Numeris, Semestras_Transporto_priemone.Busena, Semestras_Transporto_priemone.fk_Aikstele) VALUES ('GGG333', 'Stovi', '2');
+    INSERT INTO Semestras_Stovejimo_laikas(Semestras_Stovejimo_laikas.stovejimo_pradzia, Semestras_Stovejimo_laikas.stovejimo_pabaiga, Semestras_Stovejimo_laikas.Busena, Semestras_Stovejimo_laikas.fk_Transporto_priemone) VALUES('2019-06-09 10:00:00', '2019-06-09 10:00:00', 'Nesumoketa', LAST_INSERT_ID());
+    
