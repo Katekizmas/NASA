@@ -30,4 +30,8 @@
     WHERE Semestras_Transporto_priemone.fk_Aikstele='%s' 
     GROUP BY Semestras_Aikstele.Vietu_skaicius;" % (raktasIsvaziuoja, idAikstele)
 
+5 ) gautiBusena = "SELECT Semestras_Stovejimo_laikas.Busena FROM Semestras_Transporto_priemone INNER JOIN Semestras_Stovejimo_laikas ON Semestras_Transporto_priemone.id_Transporto_priemone=Semestras_Stovejimo_laikas.fk_Transporto_priemone
+    WHERE Semestras_Transporto_priemone.Numeris='%s' AND
+    Semestras_Transporto_priemone.fk_Aikstele='%s' AND
+    Semestras_Stovejimo_laikas.Busena='%s;" % (numeris, idAikstele, raktasParuosta)
     
