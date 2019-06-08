@@ -33,6 +33,7 @@ def gautiBusena(ID, Kodas):
     try:
         zymeklis.execute(gautiBusena2)
         rezultatai = zymeklis.fetchone()
+        duomenuBaze.commit()
         return rezultatai[0]
     except:
         print("Ivyko klaida, gaunant Busena")
@@ -51,22 +52,21 @@ def gautiKoda(ID):
 def slagbaumas(ID):
     kodas = gautiKoda(ID)
     print("Jusu kodas :" + kodas + " , prasome apmoketi norint isvaziuoti")
-    minute = 9
+    minute = 12
     while 1:
-        with gautiBusena(ID, kodas) as busena:
-            print(busena)
-            if(gautiBusena(ID, kodas) == raktasApmoketa):
-                print("Sekmingai apmokejote uz stovejimo laika!")
-                return busena
-            elif (minute == 0):
-                print("Neapmokejote, bandykite dar karta")
-                return 1
-            elif(kodas == "RIP"):
-                print("nera kodo :(")
-                return 1
-            else:
-                minute = minute - 1
-                time.sleep(5)
+        busena = gautiBusena(ID, kodas)
+        if(gautiBusena(ID, kodas) == raktasApmoketa):
+            print("Sekmingai apmokejote uz stovejimo laika!")
+            return busena
+        elif (minute == 0):
+            print("Neapmokejote, bandykite dar karta")
+            return 1
+        elif(kodas == "RIP"):
+            print("nera kodo :(")
+            return 1
+        else:
+            minute = minute - 1
+            time.sleep(5)
 def fotografuoti():
     #nuotraukosPavadinimas = gautiLaika() + '.jpg'
     nuotraukosPavadinimas = "masina2" + '.jpg'
@@ -151,20 +151,22 @@ def tikrintiNumeri(numeris):
             masinaIsvaziuoja1(rezultatai[1])
             ar = slagbaumas(rezultatai[1])
             if(ar == raktasApmoketa):
+                print ("Jusu numeris : %s. Aciu, kad naudojates musu paslaugomis.\nLikusiu vietu skaicius: %s" % (numeris, vietuSkaicius + 1))
                 masinaIsvaziuoja2(rezultatai[1])
-                print ("Jusu numeris : %s. Aciu, kad naudojates musu paslaugomis.\nLikusiu vietu skaicius: %s" % (numeris, vietuSkaicius))
         elif (rezultatai[2] == raktasIvaziuoja):
             if (vietuSkaicius > 0):
                 masinaIvaziuoja(rezultatai[1])
-                print ("Jusu numeris : %s. Aciu, kad naudojates musu paslaugomis.\nLikusiu vietu skaicius: %s" % (numeris, vietuSkaicius))
+                print ("Jusu numeris : %s. Aciu, kad naudojates musu paslaugomis.\nLikusiu vietu skaicius: %s" % (numeris, vietuSkaicius - 1))
             else:
-                print("Aiksteleje, nera pakankamai vietos, prasome atvaziuoti veliau")       
+                print("Aiksteleje, nera pakankamai vietos, prasome atvaziuoti veliau")
+        print("\n\n")
     except:
         if(vietuSkaicius > 0):
             masinaNauja(numeris)
             print ("Jusu numeris : %s. Aciu, kad naudojates musu paslaugomis.\nLikusiu vietu skaicius: %s" % (numeris, vietuSkaicius))
         else:
             print("Aiksteleje, nera pakankamai vietos, prasome atvaziuoti veliau")
+        print(\n\n)
 
 def main():
     while 1:
@@ -173,8 +175,9 @@ def main():
         if judesioBukle:
             try:
                 #nuotraukosPavadinimas = fotografuoti()
-                nuotraukosPavadinimas = "masina" + '.jpg' # Kai kamera bus prijungta atkomentuoti virsutini
-                numeris = gautiNumerius(nuotraukosPavadinimas);
+                #nuotraukosPavadinimas = "masinav1" + '.jpg' # Kai kamera bus prijungta atkomentuoti virsutini
+                #numeris = gautiNumerius(nuotraukosPavadinimas);
+                numeris = "testas2"
                 if (numeris != "Neatpazintas"):
                     print("Numeriai sekmingai nuskaityti")
                     tikrintiNumeri(numeris)
